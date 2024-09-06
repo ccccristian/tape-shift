@@ -2,9 +2,12 @@
   --background: #f8f8f6;
   --foreground: #222222;
   --red: #d32f2f;
+  --darkred: #b21e1e;
   --blue: #1976d2;
-  --green: #388e3c;
+  --green: #307a30;
   --gray: #c6c6c6;
+  --white: #ededed;
+  --darkgray: #696767;
 }
 
 html,
@@ -21,6 +24,7 @@ body {
   font-family: var(--secFont);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.1rem;
 }
 
 * {
