@@ -8,21 +8,19 @@ export function useFfmpeg() {
     const [loaded, setLoaded] = useState(false)
     const [videoFile, setVideoFile] = useState<File | null>(null)
     const [videoSrc, setVideoSrc] = useState<string | null>(null)
-
+    const [message, setMessage] = useState<string |null> (null)
     const ffmpegRef = useRef(createFFmpeg({
       corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
       wasmPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.wasm',
       workerPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
     }))
-    const videoRef = useRef<HTMLVideoElement | null>(null)
-    const messageRef = useRef<HTMLParagraphElement | null>(null)
     useEffect(()=>{
         load()
     }, [])
     const load = async () => {
       const ffmpeg = ffmpegRef.current
-      ffmpeg.setLogger(({ message }) => {
-        if (messageRef.current) messageRef.current.innerHTML = message
+      ffmpeg.setLogger(({ message: m }) => {
+        setMessage(m)
       })
       // toBlobURL is used to bypass CORS issue, urls with the same
       // domain can be used directly.
@@ -31,7 +29,11 @@ export function useFfmpeg() {
     }
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      setVideoFile(file || null)
+      if(!file) return
+      setVideoFile(file)
+      const videoURL = URL.createObjectURL(file)
+      setVideoSrc(videoURL)
+
     }
 
     const transcode = async () => {
@@ -55,10 +57,8 @@ export function useFfmpeg() {
         'output.mp4')
       const data = ffmpeg.FS('readFile', 'output.mp4')
       
-      if (videoRef.current) {
-        setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' })))
-      }
+      setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' })))
     }
   
-    return {loaded, videoSrc, handleFileChange, transcode}
+    return {loaded, message, videoSrc, handleFileChange, transcode}
   }
