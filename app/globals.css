@@ -2,12 +2,16 @@
   --background: #f8f8f6;
   --foreground: #222222;
   --red: #d32f2f;
-  --darkred: #b21e1e;
+  --darkred: #8f1919;
   --blue: #1976d2;
+  --darkblue: #0f4478;
   --green: #307a30;
+  --darkgreen: #183f18;
   --gray: #c6c6c6;
   --white: #ededed;
-  --darkgray: #696767;
+  --darkgray: #7c7b7b;
+
+  --buttonFS: 1.3rem;
 }
 
 html,
@@ -33,6 +37,70 @@ body {
   margin: 0;
 }
 
+.main-button {
+  border-radius: 0.3rem;
+  background-color: var(--darkred);
+  border: none;
+  font-family: inherit;
+  user-select: none;
+  cursor: pointer;
+}
+.main-button:hover span {
+  transform: translateY(-18%);
+}
+
+.main-button:active span,
+.main-button:disabled span {
+  transform: translateY(-3%);
+}
+.main-button span {
+  background-color: var(--red);
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.3rem;
+  color: var(--white);
+  transition: transform 0.1s;
+  transform: translateY(-15%);
+  font-size: var(--buttonFS);
+  justify-content: space-between;
+}
+.main-button:disabled span {
+  opacity: 60%;
+  cursor: default;
+}
+.main-dropdown {
+  position: relative;
+  background-color: var(--darkblue);
+  width: fit-content;
+  height: fit-content;
+  border-radius: 0.3rem;
+  margin-bottom: 1rem;
+}
+.main-dropdown select {
+  padding: 1rem;
+  border: none;
+  background-color: var(--blue);
+  border-radius: 0.3rem;
+  color: var(--background);
+  font-size: var(--buttonFS);
+  font-family: inherit;
+  transform: translateY(-15%);
+  transition: transform 0.1s;
+  cursor: pointer;
+}
+
+.main-dropdown:hover select {
+  transform: translateY(-18%);
+}
+.main-dropdown:active select,
+.main-dropdown select:disabled {
+  transform: translateY(-3%);
+}
+.main-button select:disabled {
+  opacity: 60%;
+  cursor: default;
+}
 a {
   color: inherit;
   text-decoration: none;
