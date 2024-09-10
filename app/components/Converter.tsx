@@ -12,12 +12,13 @@ export default function Converter(){
         loaded, 
         loadingRatio, 
         thumbnail, 
-        message, 
         videoSrc, 
         handleFileChange, 
         videoName,
-        transcode} = useFfmpeg()
-
+        transcode,
+        exit,
+        isConverting
+    } = useFfmpeg()
     return(
         <ConverterContainer>
             <OptionsComponent 
@@ -25,9 +26,11 @@ export default function Converter(){
                 handleFileChange={handleFileChange}
                 transcode={transcode}
                 thumbnail={thumbnail}
+                isConverting={isConverting}
             />
             <ContentDisplay>
-                <LoadingBar message={message ?? ''} loadingRatio={loadingRatio}/>
+
+                <LoadingBar exit={exit} isConverting={isConverting} loadingRatio={loadingRatio}/>
                 <VideoPlayer url={videoSrc} videoName={videoName ?? 'video'}/>
                 <Instructions/>
             </ContentDisplay>
@@ -35,7 +38,7 @@ export default function Converter(){
         </ConverterContainer>
     )
 }
-function OptionsComponent({loaded, handleFileChange, thumbnail, transcode}:
+function OptionsComponent({loaded, handleFileChange, thumbnail, transcode, isConverting}:
     {
         loaded: boolean,
         handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
@@ -43,21 +46,23 @@ function OptionsComponent({loaded, handleFileChange, thumbnail, transcode}:
         thumbnail: {
             thumbnailUrl: string | null
             fileName: string | null
-        }
+        },
+        isConverting: boolean
     }
 ){
     const [selectedFormat, setSelectedFormat] = useState<string>('mp4')
+    let disabled = !loaded
+    if(thumbnail.fileName === null || isConverting) disabled = true
 
     return(
         <OContainer>
             <TitleComponent/>
-            {!loaded && <p>Loading...</p>}
                 <OButtons>
-                    <InputFile handleFileChange={handleFileChange}/>
+                    <InputFile handleFileChange={handleFileChange} disabled={!loaded}/>
                     <Thumbnail thumbnail={thumbnail}/>
                     <Flex>
                         <div className="main-dropdown">
-                            <select id="format" disabled={thumbnail.fileName === null} onChange={(e) => setSelectedFormat(e.target.value)} >
+                            <select id="format" disabled={disabled} onChange={(e) => setSelectedFormat(e.target.value)} >
                                 <option value="mp4">Mp4</option>
                                 <option value="avi">Avi</option>
                                 <option value="wmv">Wmv</option>
@@ -68,7 +73,7 @@ function OptionsComponent({loaded, handleFileChange, thumbnail, transcode}:
                             </select>
                         </div>
 
-                        <ConvertButton disabled={thumbnail.fileName === null} type='button' onClick={()=>transcode(selectedFormat)} className="main-button">
+                        <ConvertButton disabled={disabled} type='button' onClick={()=>transcode(selectedFormat)} className="main-button">
                             <span>
                             Convert
                             <BsArrowRepeat size={20}/>

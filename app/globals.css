@@ -67,7 +67,7 @@ body {
 }
 .main-button:disabled span {
   opacity: 60%;
-  cursor: default;
+  cursor: not-allowed;
 }
 .main-dropdown {
   position: relative;
@@ -97,9 +97,9 @@ body {
 .main-dropdown select:disabled {
   transform: translateY(-3%);
 }
-.main-button select:disabled {
+.main-dropdown select:disabled {
   opacity: 60%;
-  cursor: default;
+  cursor: not-allowed;
 }
 a {
   color: inherit;

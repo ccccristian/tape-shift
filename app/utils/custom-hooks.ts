@@ -10,6 +10,7 @@ export function useFfmpeg() {
     const [videoSrc, setVideoSrc] = useState<string | null>(null)
     const [videoName, setVideoName] = useState<string | null>(null)
     const [message, setMessage] = useState<string |null> (null)
+    const [isConverting, setIsConverting] = useState(false)
     const [loadingRatio, setLoadingRatio] = useState(0)
     const thumbnail = useVideoThumbnail(videoFile)
 
@@ -49,7 +50,10 @@ export function useFfmpeg() {
         alert("Please select a valid format.")
         return
       }
+      if(isConverting) return
+
       setVideoSrc(null)
+      setIsConverting(true)
 
       const ffmpeg = ffmpegRef.current
       const fileName = videoFile.name.split('.').slice(0, -1).join('.')
@@ -66,11 +70,33 @@ export function useFfmpeg() {
       const data = ffmpeg.FS('readFile', newFileName)
       
       setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: `video/${format}` })))
-      setVideoName(newFileName)
+      setVideoName(null)
       setLoadingRatio(0)
+      setIsConverting(false)
+
     }
-  
-    return {loaded, videoName, loadingRatio, thumbnail, message, videoSrc, handleFileChange, transcode}
+    async function exit(){
+      if(!isConverting) return
+      await ffmpegRef.current.exit()
+      load()
+      setLoaded(false)
+      setVideoSrc(null)
+      setVideoName(null)
+      setLoadingRatio(0)
+      setIsConverting(false)
+    }
+    return {
+      loaded, 
+      videoName, 
+      loadingRatio, 
+      thumbnail, 
+      message, 
+      videoSrc, 
+      handleFileChange, 
+      transcode,
+      exit,
+      isConverting
+    }
   }
 
 
@@ -122,3 +148,13 @@ const validFormats = [
   'mpeg',
   'm4v' ,
 ]
+
+
+export function useLoading(){
+  const [loading, setLoading] = useState(true)
+  useEffect(()=>{
+    setLoading(false)
+  }, [])
+
+  return loading
+}

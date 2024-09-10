@@ -1,15 +1,22 @@
 import styled from "styled-components"
-
-export default function LoadingBar({loadingRatio, message} : {
+import { IoStopSharp } from "react-icons/io5";
+export default function LoadingBar({loadingRatio, isConverting, exit} : {
     loadingRatio: number,
-    message: string
+    isConverting: boolean,
+    exit: ()=> void
 }){
+    if(!isConverting) return
     // const percentage = `${Math.round(loadingRatio * 100)}%`
     return(
         <>
             <BarComponent loadingRatio={loadingRatio} ledCount={7}/>
             {/* <Percentage>{loadingRatio > 0 && percentage}</Percentage> */}
-            <Message>{message}</Message>
+            <StopButton type="button" className="main-button" onClick={exit}>
+                <span>
+                    <IoStopSharp />
+                    Stop
+                </span>
+            </StopButton>
         </>
 
     )
@@ -19,7 +26,7 @@ function BarComponent({loadingRatio, ledCount} :{
     ledCount: number
 }){
     return(
-        <Bar $loadingRatio={loadingRatio}>
+        <Bar>
             {
             Array(ledCount).fill(null).map((led, index)=>{
                 return(
@@ -31,6 +38,7 @@ function BarComponent({loadingRatio, ledCount} :{
                     />
                 )
             })}
+
         </Bar>
     )
 }
@@ -61,23 +69,23 @@ function LedComponent({loadingRatio, ledCount, index}:{
 }
 
 
-const Bar = styled.div<{$loadingRatio: number;}>`
+const Bar = styled.div`
     display: flex;
+    align-items: start;
     width: 100%;
-    height: 2rem;
     transition: width .3s;
-    column-gap: 10px;
+    column-gap: 3px;
+    margin-bottom: 2rem;
 
 `
-
-const Message = styled.p`
-    width: 100%;
-    margin-bottom: 1rem;
+const StopButton = styled.button`
+    margin-bottom: 2rem;
+    height: 100%;
 `
 
 const Led = styled.div<{$opacity: number}>`
     flex-grow: 1;
-    height: 100%;
+    height: 2rem;
     border-radius: 0.3rem;
     background-color: var(--gray);
     position: relative;
