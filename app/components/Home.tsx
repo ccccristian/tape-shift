@@ -1,13 +1,20 @@
 'use client'
-import Converter from './Converter'
+import Converter from './Converter/Converter'
 import Header from './Header'
+import { useState } from 'react'
+import Notification from './Notification'
 
 export default function Home(){
-    /* eslint-disable */
+    const [notification, setNotification] = useState<string |null>(null)
+
+    function notify(message: string){
+        setNotification(message)
+    }
     return(
         <main>
             <Header/>
-            <Converter/>
+            <Converter notify={notify}/>
+            <Notification dismiss={()=>setNotification(null)} message={notification}/>
         </main>
     )
 }

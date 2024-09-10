@@ -5,6 +5,7 @@ import LoadingScreen from './components/LoadingScreen'
 export default function Page() {
   const loading = useLoading()
 
+
   if(loading) return <LoadingScreen/>
   return (
     <Home/>

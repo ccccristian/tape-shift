@@ -4,7 +4,7 @@ import { fetchFile } from "@ffmpeg/util";
 import { useEffect, useRef, useState } from "react";
 
 
-export function useFfmpeg() {
+export function useFfmpeg(notify : (message: string)=>void) {
     const [loaded, setLoaded] = useState(false)
     const [videoFile, setVideoFile] = useState<File | null>(null)
     const [videoSrc, setVideoSrc] = useState<string | null>(null)
@@ -73,7 +73,7 @@ export function useFfmpeg() {
       setVideoName(null)
       setLoadingRatio(0)
       setIsConverting(false)
-
+      notify('Video converted successfully')
     }
     async function exit(){
       if(!isConverting) return

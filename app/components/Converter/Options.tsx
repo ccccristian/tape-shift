@@ -1,44 +1,10 @@
 import styled from "styled-components"
-import { useFfmpeg } from '@/app/utils/custom-hooks'
 import InputFile from "./InputFile"
-import VideoPlayer from './VideoPlayer'
-import Instructions from "./Instructions"
 import { useState } from "react"
 import { BsArrowRepeat } from "react-icons/bs";
 import Thumbnail from "./Thumbnail"
-import LoadingBar from './LoadingBar'
-export default function Converter(){
-    const {
-        loaded, 
-        loadingRatio, 
-        thumbnail, 
-        videoSrc, 
-        handleFileChange, 
-        videoName,
-        transcode,
-        exit,
-        isConverting
-    } = useFfmpeg()
-    return(
-        <ConverterContainer>
-            <OptionsComponent 
-                loaded={loaded}
-                handleFileChange={handleFileChange}
-                transcode={transcode}
-                thumbnail={thumbnail}
-                isConverting={isConverting}
-            />
-            <ContentDisplay>
 
-                <LoadingBar exit={exit} isConverting={isConverting} loadingRatio={loadingRatio}/>
-                <VideoPlayer url={videoSrc} videoName={videoName ?? 'video'}/>
-                <Instructions/>
-            </ContentDisplay>
-
-        </ConverterContainer>
-    )
-}
-function OptionsComponent({loaded, handleFileChange, thumbnail, transcode, isConverting}:
+export default function OptionsComponent({loaded, handleFileChange, thumbnail, transcode, isConverting}:
     {
         loaded: boolean,
         handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
@@ -55,9 +21,9 @@ function OptionsComponent({loaded, handleFileChange, thumbnail, transcode, isCon
     if(thumbnail.fileName === null || isConverting) disabled = true
 
     return(
-        <OContainer>
+        <Container>
             <TitleComponent/>
-                <OButtons>
+                <Buttons>
                     <InputFile handleFileChange={handleFileChange} disabled={!loaded}/>
                     <Thumbnail thumbnail={thumbnail}/>
                     <Flex>
@@ -81,8 +47,8 @@ function OptionsComponent({loaded, handleFileChange, thumbnail, transcode, isCon
                         </ConvertButton>
                     </Flex>
 
-                </OButtons>
-        </OContainer>
+                </Buttons>
+        </Container>
     )
 }
 
@@ -97,15 +63,7 @@ function TitleComponent(){
         </>
     )
 }
-
-const ConverterContainer = styled.div`
-    display: flex;
-    width: 80%;
-    align-items: start;
-    padding-top: 3rem;
-    margin: 0 auto;
-`
-const OContainer = styled.section`
+const Container = styled.section`
     display: flex;
     flex-direction: column;
     margin: 0 auto;
@@ -115,6 +73,21 @@ const OContainer = styled.section`
         margin: 1rem 0;
         border: none;
         border-bottom: 1px solid var(--gray);
+    }
+`
+const Buttons = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    width: 100%;
+`
+const ConvertButton = styled.button`
+    margin-bottom: 1rem;
+    height: 100%;
+    margin-left: 1rem;
+    background-color: var(--darkgreen);
+    & span{
+        background-color: var(--green);
     }
 `
 
@@ -129,25 +102,6 @@ const Credits = styled.span`
     font-size: 1.2rem;
     color: var(--green);
     font-family: var(--mainFont);
-`
-const OButtons = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
-    width: 100%;
-`
-const ContentDisplay = styled.div`
-width: 50%;
-
-`
-const ConvertButton = styled.button`
-    margin-bottom: 1rem;
-    height: 100%;
-    margin-left: 1rem;
-    background-color: var(--darkgreen);
-    & span{
-        background-color: var(--green);
-    }
 `
 const Flex = styled.div`
 display: flex;
