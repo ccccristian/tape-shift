@@ -3,39 +3,38 @@ import InputFile from "./InputFile"
 import { useState } from "react"
 import { BsArrowRepeat } from "react-icons/bs";
 import Thumbnail from "./Thumbnail"
+import { validFormats } from "@/app/utils/definitions";
 
-export default function OptionsComponent({loaded, handleFileChange, thumbnail, transcode, isConverting}:
+export default function OptionsComponent({loaded, handleFileChange, videoFile, transcode, isConverting}:
     {
         loaded: boolean,
         handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
         transcode : (format:string)=> void,
-        thumbnail: {
-            thumbnailUrl: string | null
-            fileName: string | null
-        },
+        videoFile: File | null
         isConverting: boolean
     }
 ){
     const [selectedFormat, setSelectedFormat] = useState<string>('mp4')
-    let disabled = !loaded
-    if(thumbnail.fileName === null || isConverting) disabled = true
+
+
+    // Convert input is disabled if Ffmpeg is not loaded, 
+    // the user did not uploaded any file or there is a file in current conversion
+    const disabled = !loaded || !videoFile || isConverting
 
     return(
         <Container>
             <TitleComponent/>
                 <Buttons>
-                    <InputFile handleFileChange={handleFileChange} disabled={!loaded}/>
-                    <Thumbnail thumbnail={thumbnail}/>
+                    <InputFile handleFileChange={handleFileChange}/>
+                    <Thumbnail file={videoFile}/>
                     <Flex>
                         <div className="main-dropdown">
                             <select id="format" disabled={disabled} onChange={(e) => setSelectedFormat(e.target.value)} >
-                                <option value="mp4">Mp4</option>
-                                <option value="avi">Avi</option>
-                                <option value="wmv">Wmv</option>
-                                <option value="mpg">Mpg</option>
-                                <option value="mpeg">Mpeg</option>
-                                <option value="m4v">M4v</option>
-                                <option value="webm">Webm</option>
+                                {validFormats.map(format =>{
+                                    return(
+                                        <option key={format} value={format}>{format}</option>
+                                    )
+                                })}
                             </select>
                         </div>
 

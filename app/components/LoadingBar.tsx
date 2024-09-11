@@ -6,11 +6,9 @@ export default function LoadingBar({loadingRatio, isConverting, exit} : {
     exit: ()=> void
 }){
     if(!isConverting) return
-    // const percentage = `${Math.round(loadingRatio * 100)}%`
     return(
         <>
             <BarComponent loadingRatio={loadingRatio} ledCount={7}/>
-            {/* <Percentage>{loadingRatio > 0 && percentage}</Percentage> */}
             <StopButton type="button" className="main-button" onClick={exit}>
                 <span>
                     <IoStopSharp />
@@ -48,26 +46,28 @@ function LedComponent({loadingRatio, ledCount, index}:{
     ledCount: number,
     index: number
 }){
-    const ledPosition = index 
-    const portion = 100 / ledCount
-    const progress = loadingRatio * 100
-    const ledStart = portion * ledPosition
-    const ledEnd = ledStart + portion
+    const opacity = ledOpacity(loadingRatio, ledCount, index)
 
-    let opacity; //Calcular opacidad del led
-    if (progress >= ledEnd) {
-        opacity = 100 // El progreso ha pasado el LED, por lo que está completamente encendido
-      } else if (progress >= ledStart) {
-        opacity = (progress - ledStart) / portion * 100
-        // Aumenta la opacidad de 50% a 100% conforme el progreso pasa por el LED
-      } else {
-        opacity = 0 // El progreso aún no ha alcanzado el LED, mantenlo en la opacidad mínima
-      }
     return(
         <Led $opacity={opacity}/>
     )
 }
-
+function ledOpacity(ratio: number, count: number, position: number){
+    const portion = 100 / count
+    const progress = ratio * 100
+    const start = portion * position
+    const end = start + portion
+    let opacity; //Calculate LED opacity
+    if (progress >= end) {
+        opacity = 100 // Progress has passed the LED, so it is fully lit
+      } else if (progress >= start) {
+        opacity = (progress - start) / portion * 100
+        // Increase opacity as progress passes through the LED
+      } else {
+        opacity = 0 // Progress has not reached the LED yet, keep it at minimum opacity
+      }
+    return opacity
+}
 
 const Bar = styled.div`
     display: flex;

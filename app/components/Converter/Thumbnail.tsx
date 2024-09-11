@@ -1,25 +1,23 @@
+import { useVideoThumbnail } from "@/app/utils/custom-hooks"
 import Image from "next/image"
 import styled from "styled-components"
 
-export default function Thumbnail({thumbnail} :{
-    thumbnail: {
-        thumbnailUrl: string | null
-        fileName: string | null
-    }
+export default function Thumbnail({file} :{
+    file: File | null
 }){
-    const {thumbnailUrl, fileName} = thumbnail
+    const {name, url} = useVideoThumbnail(file)
     return(
         <Container>
             <ThumbnailContainer>
                 {
-                    thumbnailUrl ?
-                    <Image src={thumbnailUrl} width={1000} height={1000} alt="Your video thumbnail"/>
+                    url ?
+                    <Image src={url} width={1000} height={1000} alt="Your video thumbnail"/>
                     : <Warning>No preview available</Warning>
                 }
             </ThumbnailContainer>
             {
-                fileName && 
-                <FileName>{fileName}</FileName>
+                name && 
+                <FileName>{name}</FileName>
             }
         </Container>
     )

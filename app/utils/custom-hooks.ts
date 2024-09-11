@@ -2,57 +2,46 @@
 import { createFFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
 import { useEffect, useRef, useState } from "react";
+import { NotifyFunction, Thumbnail, validFormats, VideoProfile } from "./definitions";
 
 
-export function useFfmpeg(notify : (message: string)=>void) {
+const ffmpegOptions = {
+  corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+  wasmPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.wasm',
+  workerPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
+}
+
+export function useFfmpeg(notify : NotifyFunction, videoFile: File | null) {
     const [loaded, setLoaded] = useState(false)
-    const [videoFile, setVideoFile] = useState<File | null>(null)
-    const [videoSrc, setVideoSrc] = useState<string | null>(null)
-    const [videoName, setVideoName] = useState<string | null>(null)
-    const [message, setMessage] = useState<string |null> (null)
+
+    const [ newVideoProfile, setNewVideoProfile] = useState<VideoProfile | null>(null)
+
     const [isConverting, setIsConverting] = useState(false)
     const [loadingRatio, setLoadingRatio] = useState(0)
-    const thumbnail = useVideoThumbnail(videoFile)
 
-    const ffmpegRef = useRef(createFFmpeg({
-      corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
-      wasmPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.wasm',
-      workerPath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.worker.js'
-    }))
+    const ffmpegRef = useRef(createFFmpeg(ffmpegOptions))
+
+    //Load when component is mounted
     useEffect(()=>{
         load()
     }, [])
     const load = async () => {
       const ffmpeg = ffmpegRef.current
-      ffmpeg.setLogger(({ message: m }) => {
-        setMessage(m)
-      })
-      // toBlobURL is used to bypass CORS issue, urls with the same
-      // domain can be used directly.
       await ffmpeg.load()
       setLoaded(true)
     }
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if(!file) return
-      setVideoFile(file)
-
-      // const videoURL = URL.createObjectURL(file)
-      // setVideoSrc(videoURL)
-
-    }
     const transcode = async (format: string) => {
       if (!videoFile) {
-        alert("Please select a video file first.")
+        notify("Please select a video file first.")
         return
       }
       if(!validFormats.includes(format)){
-        alert("Please select a valid format.")
+        notify("Please select a valid format.")
         return
       }
       if(isConverting) return
+      setNewVideoProfile(null)
 
-      setVideoSrc(null)
       setIsConverting(true)
 
       const ffmpeg = ffmpegRef.current
@@ -69,8 +58,10 @@ export function useFfmpeg(notify : (message: string)=>void) {
 
       const data = ffmpeg.FS('readFile', newFileName)
       
-      setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: `video/${format}` })))
-      setVideoName(null)
+      const url = URL.createObjectURL(new Blob([data.buffer], { type: `video/${format}` }))
+
+      setNewVideoProfile({url, name: newFileName})
+
       setLoadingRatio(0)
       setIsConverting(false)
       notify('Video converted successfully')
@@ -80,19 +71,13 @@ export function useFfmpeg(notify : (message: string)=>void) {
       await ffmpegRef.current.exit()
       load()
       setLoaded(false)
-      setVideoSrc(null)
-      setVideoName(null)
       setLoadingRatio(0)
       setIsConverting(false)
     }
     return {
       loaded, 
-      videoName, 
       loadingRatio, 
-      thumbnail, 
-      message, 
-      videoSrc, 
-      handleFileChange, 
+      newVideoProfile,
       transcode,
       exit,
       isConverting
@@ -101,21 +86,20 @@ export function useFfmpeg(notify : (message: string)=>void) {
 
 
 export function useVideoThumbnail(file: File | null){
-  const [thumbnailUrl, setThumbnail] = useState<string |null>(null)
-  const [fileName, setFileName] = useState<string |null>(null)
+  const initial = { name: '', url: ''}
+  const [thumbnail, setThumbnail] = useState<Thumbnail>(initial)
 
   useEffect(()=>{
-    setFileName(null)
-    setThumbnail(null)
+    setThumbnail(initial)
     generateThumbnail()
   }, [file])
 
   const generateThumbnail = () => {
     if(!file){
-      setThumbnail(null)
+      setThumbnail(initial)
       return
     }
-    setFileName(file.name)
+    const name = file.name
 
     const video = document.createElement('video')
     const canvas = document.createElement('canvas')
@@ -123,7 +107,7 @@ export function useVideoThumbnail(file: File | null){
 
     video.src = URL.createObjectURL(file)
     video.addEventListener('loadeddata', () => {
-      video.currentTime = 1  // Se puede ajustar el tiempo para capturar otro frame
+      video.currentTime = 1  // You can set the time to capture another frame
     })
 
     video.addEventListener('seeked', () => {
@@ -131,23 +115,15 @@ export function useVideoThumbnail(file: File | null){
       canvas.height = video.videoHeight
       if(!ctx) return
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-      setThumbnail(canvas.toDataURL('image/jpeg'))
-      URL.revokeObjectURL(video.src)  // Limpiar la URL temporal
+      const url = canvas.toDataURL('image/jpeg')
+      setThumbnail({url, name})
+      URL.revokeObjectURL(video.src)  // Clean the temporary Url
     })
   }
 
-  return {thumbnailUrl, fileName}
+  return thumbnail
 }
 
-const validFormats = [
-  'mp4', 
-  'avi', 
-  'webm',
-  'wmv' ,
-  'mpg' ,
-  'mpeg',
-  'm4v' ,
-]
 
 
 export function useLoading(){
@@ -157,4 +133,19 @@ export function useLoading(){
   }, [])
 
   return loading
+}
+
+export function useFile(){
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>){
+    const file = e.target.files?.[0]
+    if(!file) return
+
+    const format = file.name.split('.')[1]
+    if(!validFormats.includes(format)) return
+    
+    setVideoFile(file)
+  }
+  return {videoFile, handleFileChange}
 }

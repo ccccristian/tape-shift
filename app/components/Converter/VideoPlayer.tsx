@@ -4,9 +4,10 @@ import styled from "styled-components";
 import { IoMdPlay } from "react-icons/io";
 import { IoMdPause } from "react-icons/io";
 import { RiDownload2Fill } from "react-icons/ri";
-export default function VideoPlayer({url, videoName} : {
-    url: string | null,
-    videoName: string
+import { VideoProfile } from "@/app/utils/definitions";
+
+export default function VideoPlayer({newVideoProfile} : {
+    newVideoProfile: VideoProfile | null
 }){
     const playerRef = useRef(null)
     const [playing, setPlaying] = useState(false)
@@ -15,11 +16,13 @@ export default function VideoPlayer({url, videoName} : {
     {
         setPlaying(!playing)
     }
-    if(!url) return
+    if(!newVideoProfile) return
+    const {url, name} = newVideoProfile
+
     return(
         <Container>
             <PlayerWrapper>
-                    <VideoName>{videoName}</VideoName>
+                    <VideoName>{name}</VideoName>
                     {
                         videoError && 
                         <ErrorDisplay>No preview available</ErrorDisplay>
@@ -46,7 +49,7 @@ export default function VideoPlayer({url, videoName} : {
                             }
                         </span>
                     </PlayButton>
-                    <DownloadButton href={url} download={videoName} className="main-button">
+                    <DownloadButton href={url} download={name} className="main-button">
                         <span>
                             {
                                 <RiDownload2Fill size={15}/>

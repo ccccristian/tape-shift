@@ -1,18 +1,8 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Roboto_Mono } from 'next/font/google'
-import "./globals.css";
- 
-// Font files can be colocated inside of `pages`
-const mainFont = Roboto_Mono({
-  subsets: ['cyrillic'],
-  variable: '--mainFont',
-  weight: ['400', '500', '700']
-})
-const secondaryFont = localFont({ 
-  src: './fonts/ocr-b.ttf',
-  variable: '--secFont'
- })
+import type { Metadata } from "next"
+import { mainFont, secondaryFont } from '@/app/fonts/fonts'
+import "./buttons.css"
+import "./globals.css"
+
 export const metadata: Metadata = {
   title: "TapeShift - Online Video Converter",
   description: "Online video converter",

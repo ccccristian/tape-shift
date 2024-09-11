@@ -11,11 +11,14 @@ export default function Home(){
     function notify(message: string){
         setNotification(message)
     }
+    function dismiss(){
+        setNotification(null)
+    }
     return(
         <main>
             <Header/>
             <Converter notify={notify}/>
-            <Notification dismiss={()=>setNotification(null)} message={notification}/>
+            <Notification dismiss={dismiss} message={notification}/>
             <Footer/>
         </main>
     )

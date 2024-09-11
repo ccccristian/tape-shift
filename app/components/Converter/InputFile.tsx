@@ -1,8 +1,7 @@
 import styled from "styled-components"
 import { FaFilm } from "react-icons/fa";
-export default function InputFile({handleFileChange, disabled} : {
+export default function InputFile({handleFileChange} : {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    disabled: boolean
 }){
     return(
         <>
@@ -14,7 +13,7 @@ export default function InputFile({handleFileChange, disabled} : {
                 </span>
             </Container>
         </Label>
-        <Input disabled={disabled} type="file" id="file" onChange={handleFileChange} accept="video/*"/>
+        <Input type="file" id="file" onChange={handleFileChange} accept="video/*"/>
         </>
     )
 }
