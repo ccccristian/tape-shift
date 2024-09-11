@@ -1,9 +1,8 @@
 'use client'
 import { createFFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { NotifyFunction, Thumbnail, validFormats, VideoProfile } from "./definitions";
-
 
 const ffmpegOptions = {
   corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
@@ -148,4 +147,26 @@ export function useFile(){
     setVideoFile(file)
   }
   return {videoFile, handleFileChange}
+}
+
+export function useMenuDisplay(ref: RefObject<HTMLDivElement>): [boolean, (b: boolean)=>void]{
+
+  const [isDisplayed, setIsDisplayed] = useState<boolean>(false)
+  useEffect(()=>{
+    function dismiss(e: MouseEvent)
+    {
+      const current = ref.current
+      if(!current) return
+
+      const target = e.target as Node
+      if(!current.contains(target)){
+        setIsDisplayed(false)
+      }
+    }
+    document.addEventListener('mousedown', dismiss)
+
+    return ()=>{ document.removeEventListener('mousedown', dismiss)}
+  }, [])
+  const toggle = ()=> setIsDisplayed(prev => !prev)
+  return [isDisplayed, toggle]
 }
