@@ -3,6 +3,7 @@ import Converter from './Converter/Converter'
 import Header from './Header'
 import { useState } from 'react'
 import Notification from './Notification'
+import Footer from './Footer'
 
 export default function Home(){
     const [notification, setNotification] = useState<string |null>(null)
@@ -15,6 +16,7 @@ export default function Home(){
             <Header/>
             <Converter notify={notify}/>
             <Notification dismiss={()=>setNotification(null)} message={notification}/>
+            <Footer/>
         </main>
     )
 }

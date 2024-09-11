@@ -28,19 +28,9 @@ const Container = styled.div`
     background-color: var(--foreground);
     border-radius: 0.3rem;
 
-    animation: fade-in forwards .3s;
     & button span{
         padding: 0.8rem;
         font-size: 1.3rem;
-    }
-    @keyframes fade-in{
-        0%{
-            opacity: 0;
-        }
-        100%{
-            opacity: 100%;
-
-        }
     }
 
 `
