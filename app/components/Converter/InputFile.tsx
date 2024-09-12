@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { FaFilm } from "react-icons/fa";
+import { devices } from "@/app/utils/devices";
 export default function InputFile({handleFileChange} : {
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }){
@@ -20,13 +21,14 @@ export default function InputFile({handleFileChange} : {
 
 const Container = styled.div`
     position: relative;
-    width: fit-content;
     margin-bottom: 1rem;
     width: 100%;
-
+    @media ${devices.tablet}{
+        max-width: 14rem;
+    }
 `
 const Label = styled.label`
-    width: 25rem;
+    width: 100%;
 `
 const Input = styled.input`
     display: none;

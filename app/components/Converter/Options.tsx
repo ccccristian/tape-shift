@@ -4,6 +4,7 @@ import { useState } from "react"
 import { BsArrowRepeat } from "react-icons/bs";
 import Thumbnail from "./Thumbnail"
 import { validFormats } from "@/app/utils/definitions";
+import { devices } from "@/app/utils/devices";
 
 export default function OptionsComponent({loaded, handleFileChange, videoFile, transcode, isConverting}:
     {
@@ -65,14 +66,21 @@ function TitleComponent(){
 const Container = styled.section`
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
-    width: 50%;
-    padding-right: 3rem; 
+    justify-content: center;
+    flex-grow: 1;
+    box-sizing: border-box;
+    width: 100%;
     hr{
         margin: 1rem 0;
         border: none;
         border-bottom: 1px solid var(--gray);
     }
+    @media ${devices.tablet}{
+        padding-right: 3rem; 
+        width: 50%;
+
+    }
+
 `
 const Buttons = styled.div`
     display: flex;
@@ -83,11 +91,16 @@ const Buttons = styled.div`
 const ConvertButton = styled.button`
     margin-bottom: 1rem;
     height: 100%;
+    width: 100%;
     margin-left: 1rem;
     background-color: var(--darkgreen);
     & span{
         background-color: var(--green);
     }
+    @media ${devices.tablet}{
+        max-width: 10rem;
+    }
+
 `
 
 const Title = styled.h1`
@@ -103,7 +116,7 @@ const Credits = styled.span`
     font-family: var(--mainFont);
 `
 const Flex = styled.div`
-display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
 
 `

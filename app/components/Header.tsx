@@ -100,6 +100,7 @@ const MenuButton = styled.button`
     border: none;
     background-color: transparent;
     width: 3rem;
+    margin-right: 1rem;
     @media ${devices.mobileL}{
         display: none;
     }

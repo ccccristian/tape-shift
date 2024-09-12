@@ -74,8 +74,7 @@ const VideoName = styled.p`
 
 `
 const Container = styled.div`
-background-color: var(--gray);
-
+    background-color: var(--gray);
 `
 const PlayerWrapper = styled.div`
     position: relative;
@@ -83,6 +82,7 @@ const PlayerWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     background-color: #000;
     margin-bottom: 3rem;
     border-radius: 0.3rem;

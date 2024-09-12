@@ -20,11 +20,12 @@ const Container = styled.ol`
     & li{
         margin-bottom: 1rem;
         display: flex;
-        align-items: center;
+        align-items: start;
     }
     & li strong{
         color: var(--green);
-        margin-right: 1rem
+        margin-right: 1rem;
+        min-width: fit-content;
     }
 
 `

@@ -4,6 +4,7 @@ import Header from './Header'
 import { useState } from 'react'
 import Notification from './Notification'
 import Footer from './Footer'
+import styled from 'styled-components'
 
 export default function Home(){
     const [notification, setNotification] = useState<string |null>(null)
@@ -15,12 +16,15 @@ export default function Home(){
         setNotification(null)
     }
     return(
-        <main>
+        <Main>
             <Header/>
             <Converter notify={notify}/>
             <Notification dismiss={dismiss} message={notification}/>
             <Footer/>
-        </main>
+        </Main>
     )
 }
 
+const Main = styled.main`
+    min-height: 100vh;
+`

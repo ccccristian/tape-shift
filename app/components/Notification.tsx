@@ -23,8 +23,9 @@ const Container = styled.div`
     padding: 1rem;
     box-sizing: border-box;
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 0;
+    right: 0;
+    margin: 1rem;
     background-color: var(--foreground);
     border-radius: 0.3rem;
 
