@@ -27,7 +27,7 @@ function LinkList({displayMenu} : {
 }){
     const links = [
         {label: 'Github', href: 'https://github.com/ccccristian/tape-shift'},
-        {label: 'Documentation', href: '/'},
+        {label: 'Documentation', href: 'https://meza-cristian.vercel.app/documentation/tapeshift'},
     ]
     return (
         <LinkListContainer className={`${!displayMenu && 'hidden'}`}>
